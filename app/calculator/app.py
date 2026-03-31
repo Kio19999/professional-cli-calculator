@@ -1,64 +1,60 @@
-from __future__ import annotations
-from app.calculation import CalculationFactory, CalculationHistory
+from fastapi import FastAPI, HTTPException
+import logging
+
+from app.operation.arithmetic import Add, Subtract, Multiply, Divide
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+
+app = FastAPI(title="Calculator API")
+
+add_op = Add()
+subtract_op = Subtract()
+multiply_op = Multiply()
+divide_op = Divide()
 
 
-def parse_number(text: str) -> float:
+@app.get("/")
+def home():
+    logger.info("Home endpoint called")
+    return {"message": "Calculator API is running"}
+
+
+@app.get("/add")
+def add_numbers(a: float, b: float):
+    logger.info(f"Add called with a={a}, b={b}")
+    result = add_op.execute(a, b)
+    logger.info(f"Add result={result}")
+    return {"operation": "add", "a": a, "b": b, "result": result}
+
+
+@app.get("/subtract")
+def subtract_numbers(a: float, b: float):
+    logger.info(f"Subtract called with a={a}, b={b}")
+    result = subtract_op.execute(a, b)
+    logger.info(f"Subtract result={result}")
+    return {"operation": "subtract", "a": a, "b": b, "result": result}
+
+
+@app.get("/multiply")
+def multiply_numbers(a: float, b: float):
+    logger.info(f"Multiply called with a={a}, b={b}")
+    result = multiply_op.execute(a, b)
+    logger.info(f"Multiply result={result}")
+    return {"operation": "multiply", "a": a, "b": b, "result": result}
+
+
+@app.get("/divide")
+def divide_numbers(a: float, b: float):
+    logger.info(f"Divide called with a={a}, b={b}")
     try:
-        return float(text.strip())
-    except ValueError as e:
-        raise ValueError(f"Invalid number: {text}") from e
-
-
-def format_help() -> str:
-    ops = ", ".join(CalculationFactory.supported_operations())
-    return (
-        "Commands:\n"
-        "  help     -> show this help\n"
-        "  history  -> show calculation history\n"
-        "  exit     -> quit\n\n"
-        "Operations (type one):\n"
-        f"  {ops}\n"
-        "You can also use symbols: +  -  *  /\n"
-    )
-
-
-def repl() -> None:
-    history = CalculationHistory()
-    print("Professional CLI Calculator")
-    print("Type 'help' for commands.\n")
-
-    while True:
-        cmd = input("calc> ").strip().lower()
-
-        if cmd in ("exit", "quit"):
-            print("Bye!")
-            return
-
-        if cmd == "help":
-            print(format_help())
-            continue
-
-        if cmd == "history":
-            if history.is_empty():
-                print("No history yet.\n")
-            else:
-                for i, item in enumerate(history.all(), start=1):
-                    print(f"{i}. {item}")
-                print()
-            continue
-
-        a_raw = input("Enter first number: ")
-        b_raw = input("Enter second number: ")
-
-        try:
-            a = parse_number(a_raw)
-            b = parse_number(b_raw)
-            calc = CalculationFactory.create(cmd, a, b)
-            history.add(calc)
-            print(f"Result: {calc.result}\n")
-        except (ValueError, ZeroDivisionError) as e:
-            print(f"Error: {e}\n")
-
-
-if __name__ == "__main__":  # pragma: no cover
-    repl()
+        result = divide_op.execute(a, b)
+        logger.info(f"Divide result={result}")
+        return {"operation": "divide", "a": a, "b": b, "result": result}
+    except ZeroDivisionError as e:
+        logger.error(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
