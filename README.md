@@ -55,13 +55,24 @@ http://localhost:8000/docs
 
 Running Tests
 
-Run all tests using:
+# Calculator API
 
+## Run locally
+```bash
+pip install -r requirements.txt
 pytest -v
+
 
 ✔ All tests passing (42/42)
 
 ⸻
+
+docker build -t k1oo/calculator-api .
+docker run -p 8000:8000 k1oo/calculator-api
+
+https://hub.docker.com/r/k1oo/calculator-api
+
+
 
 API Endpoints
 
