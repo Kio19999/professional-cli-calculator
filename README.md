@@ -116,6 +116,16 @@ tests/
   test_users_unit.py
   test_users_integration.py
 
+  ## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration.
+
+- Runs automatically on push to main branch
+- Installs dependencies
+- Executes all tests using pytest
+
+Latest workflow status: ✅ Passed
+
 
 ⸻
 
