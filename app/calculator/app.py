@@ -2,6 +2,12 @@ from fastapi import FastAPI, HTTPException
 import logging
 
 from app.operation.arithmetic import Add, Subtract, Multiply, Divide
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+from app.database import Base, engine, get_db
+from app.schemas import UserCreate, UserRead
+from app.crud import create_user
 
 logging.basicConfig(
     level=logging.INFO,
@@ -11,6 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Calculator API")
+Base.metadata.create_all(bind=engine)
 
 add_op = Add()
 subtract_op = Subtract()
@@ -57,4 +64,11 @@ def divide_numbers(a: float, b: float):
         return {"operation": "divide", "a": a, "b": b, "result": result}
     except ZeroDivisionError as e:
         logger.error(str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@app.post("/users", response_model=UserRead, status_code=201)
+def create_user_route(user: UserCreate, db: Session = Depends(get_db)):
+    try:
+        return create_user(db, user)
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
