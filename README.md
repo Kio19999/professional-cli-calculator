@@ -1,4 +1,120 @@
-# Professional CLI Calculator
-## Docker + Database Integration
+Calculator CLI + FastAPI Application
 
-This project extends a FastAPI-based calculator by integrating Docker Compose with PostgreSQL and pgAdmin. It demonstrates database operations including table creation, data insertion, querying, updating, deletion, and relational mapping using foreign keys.
+Overview
+
+This project is a Python-based calculator application extended with a FastAPI backend and PostgreSQL database integration. It supports arithmetic operations and user creation with proper validation, along with comprehensive testing.
+
+⸻
+
+Features
+	•	Basic calculator operations:
+	•	Add
+	•	Subtract
+	•	Multiply
+	•	Divide
+	•	REST API built using FastAPI
+	•	PostgreSQL database integration using SQLAlchemy
+	•	User creation with validation and password hashing
+	•	Dockerized setup for easy deployment
+	•	Full test coverage:
+	•	Unit Tests
+	•	Integration Tests
+	•	End-to-End Tests
+
+⸻
+
+Tech Stack
+	•	Python 3.13
+	•	FastAPI
+	•	PostgreSQL
+	•	SQLAlchemy
+	•	Docker & Docker Compose
+	•	Pytest
+
+⸻
+
+Setup Instructions
+
+1. Clone the repository
+
+git clone (https://github.com/Kio19999/professional-cli-calculator)
+cd calculator-cli2
+
+2. Start the application using Docker
+
+docker compose up --build
+
+3. Access API
+
+Open browser:
+
+http://localhost:8000/docs
+
+
+⸻
+
+Running Tests
+
+Run all tests using:
+
+pytest -v
+
+✔ All tests passing (42/42)
+
+⸻
+
+API Endpoints
+
+Method	Endpoint	Description
+GET	/	Home        route
+GET	/   add	        Add numbers
+GET	/.  subtract	Subtract numbers
+GET	/.  multiply	Multiply numbers
+GET	/   divide	    Divide numbers
+POST/.  users	    Create user
+
+
+⸻
+
+Example Request (Create User)
+
+{
+  "username": "himanshu",
+  "email": "himanshu@example.com",
+  "password": "Strong123"
+}
+
+
+⸻
+
+Project Structure
+
+app/
+  calculator/
+  operation/
+  database.py
+  models.py
+  schemas.py
+  crud.py
+  security.py
+
+tests/
+  test_api.py
+  test_calculations.py
+  test_operations.py
+  test_users_unit.py
+  test_users_integration.py
+
+
+⸻
+
+Notes
+	•	Integration tests use PostgreSQL database.
+	•	Database connection is configured using SQLAlchemy.
+	•	Password hashing is implemented for security.
+
+⸻
+
+Author
+
+Himanshu Singh
