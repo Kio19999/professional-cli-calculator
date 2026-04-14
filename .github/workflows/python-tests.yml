@@ -2,7 +2,8 @@ name: Run Tests
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   test:
@@ -24,7 +25,8 @@ jobs:
           --health-retries=5
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -34,7 +36,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest psycopg2-binary
+          pip install pytest psycopg2-binary playwright
+
+      - name: Install Playwright Browsers
+        run: playwright install --with-deps
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..10}; do
+            nc -z localhost 5432 && echo "Postgres is up!" && break
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
 
       - name: Run tests
         env:
