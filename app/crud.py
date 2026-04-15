@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from .models import User
-from .schemas import UserCreate
+from .models import User, Calculation
+from .schemas import UserCreate, CalculationCreate, CalculationType
 from .security import hash_password
 
 def get_user_by_username(db: Session, username: str):
@@ -25,3 +25,30 @@ def create_user(db: Session, user: UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def compute_result(calculation: CalculationCreate) -> float:
+    if calculation.type == CalculationType.add:
+        return calculation.a + calculation.b
+    if calculation.type == CalculationType.subtract:
+        return calculation.a - calculation.b
+    if calculation.type == CalculationType.multiply:
+        return calculation.a * calculation.b
+    if calculation.type == CalculationType.divide:
+        if calculation.b == 0:
+            raise ValueError("Division by zero is not allowed")
+        return calculation.a / calculation.b
+    raise ValueError("Invalid calculation type")
+
+def create_calculation(db, calculation: CalculationCreate):
+    result = compute_result(calculation)
+
+    db_calculation = Calculation(
+        a=calculation.a,
+        b=calculation.b,
+        type=calculation.type.value,
+        result=result
+    )
+    db.add(db_calculation)
+    db.commit()
+    db.refresh(db_calculation)
+    return db_calculation

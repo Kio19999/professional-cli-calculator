@@ -126,6 +126,16 @@ This project uses GitHub Actions for continuous integration.
 
 Latest workflow status: ✅ Passed
 
+## Calculation Model and Tests
+
+This module adds a SQLAlchemy `Calculation` model and Pydantic schemas for validating calculation input and output.
+
+To run all tests locally:
+
+```bash
+pip install -r requirements.txt
+pytest -v
+
 
 ⸻
 
