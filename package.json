@@ -1,0 +1,27 @@
+{
+  "name": "calculator-cli2",
+  "version": "1.0.0",
+  "description": "This project implements a FastAPI-based backend with: - User registration and login - Calculation CRUD (BREAD) operations - SQLAlchemy database integration - Pydantic validation - Integration and unit testing - CI/CD using GitHub Actions",
+  "main": "playwright.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kio19999/professional-cli-calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kio19999/professional-cli-calculator/issues"
+  },
+  "homepage": "https://github.com/Kio19999/professional-cli-calculator#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
+}

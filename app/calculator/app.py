@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import FileResponse
 import logging
+import os
 from sqlalchemy.orm import Session
 
 from app.operation.arithmetic import Add, Subtract, Multiply, Divide
@@ -8,6 +10,7 @@ from app.schemas import (
     UserCreate,
     UserRead,
     UserLogin,
+    TokenResponse,
     CalculationCreate,
     CalculationRead,
     CalculationUpdate,
@@ -21,6 +24,7 @@ from app.crud import (
     update_calculation,
     delete_calculation,
 )
+from app.security import create_access_token
 
 logging.basicConfig(
     level=logging.INFO,
@@ -37,50 +41,26 @@ subtract_op = Subtract()
 multiply_op = Multiply()
 divide_op = Divide()
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+
 
 @app.get("/")
 def home():
-    logger.info("Home endpoint called")
     return {"message": "Calculator API is running"}
 
 
-@app.get("/add")
-def add_numbers(a: float, b: float):
-    logger.info(f"Add called with a={a}, b={b}")
-    result = add_op.execute(a, b)
-    logger.info(f"Add result={result}")
-    return {"operation": "add", "a": a, "b": b, "result": result}
+@app.get("/register-page")
+def register_page():
+    return FileResponse(os.path.join(FRONTEND_DIR, "register.html"))
 
 
-@app.get("/subtract")
-def subtract_numbers(a: float, b: float):
-    logger.info(f"Subtract called with a={a}, b={b}")
-    result = subtract_op.execute(a, b)
-    logger.info(f"Subtract result={result}")
-    return {"operation": "subtract", "a": a, "b": b, "result": result}
+@app.get("/login-page")
+def login_page():
+    return FileResponse(os.path.join(FRONTEND_DIR, "login.html"))
 
 
-@app.get("/multiply")
-def multiply_numbers(a: float, b: float):
-    logger.info(f"Multiply called with a={a}, b={b}")
-    result = multiply_op.execute(a, b)
-    logger.info(f"Multiply result={result}")
-    return {"operation": "multiply", "a": a, "b": b, "result": result}
-
-
-@app.get("/divide")
-def divide_numbers(a: float, b: float):
-    logger.info(f"Divide called with a={a}, b={b}")
-    try:
-        result = divide_op.execute(a, b)
-        logger.info(f"Divide result={result}")
-        return {"operation": "divide", "a": a, "b": b, "result": result}
-    except ZeroDivisionError as e:
-        logger.error(str(e))
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@app.post("/users/register", response_model=UserRead, status_code=201)
+@app.post("/register", response_model=UserRead, status_code=201)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     try:
         return create_user(db, user)
@@ -88,16 +68,43 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post("/users/login")
+@app.post("/login", response_model=TokenResponse)
 def login_user(user: UserLogin, db: Session = Depends(get_db)):
     try:
         db_user = verify_user_login(db, user.username, user.password)
+        token = create_access_token({"sub": db_user.username})
         return {
-            "message": "Login successful",
-            "username": db_user.username,
-            "email": db_user.email
+            "access_token": token,
+            "token_type": "bearer"
         }
-    except ValueError as e:
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
+
+@app.get("/add")
+def add_numbers(a: float, b: float):
+    result = add_op.execute(a, b)
+    return {"operation": "add", "a": a, "b": b, "result": result}
+
+
+@app.get("/subtract")
+def subtract_numbers(a: float, b: float):
+    result = subtract_op.execute(a, b)
+    return {"operation": "subtract", "a": a, "b": b, "result": result}
+
+
+@app.get("/multiply")
+def multiply_numbers(a: float, b: float):
+    result = multiply_op.execute(a, b)
+    return {"operation": "multiply", "a": a, "b": b, "result": result}
+
+
+@app.get("/divide")
+def divide_numbers(a: float, b: float):
+    try:
+        result = divide_op.execute(a, b)
+        return {"operation": "divide", "a": a, "b": b, "result": result}
+    except ZeroDivisionError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -123,11 +130,7 @@ def read_calculation(calculation_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/calculations/{calculation_id}", response_model=CalculationRead)
-def edit_calculation(
-    calculation_id: int,
-    calculation: CalculationUpdate,
-    db: Session = Depends(get_db)
-):
+def edit_calculation(calculation_id: int, calculation: CalculationUpdate, db: Session = Depends(get_db)):
     try:
         return update_calculation(db, calculation_id, calculation)
     except ValueError as e:

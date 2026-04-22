@@ -3,10 +3,12 @@ from pydantic import BaseModel, EmailStr, ConfigDict, model_validator
 from enum import Enum
 from typing import Optional
 
+
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
+
 
 class UserRead(BaseModel):
     id: int
@@ -16,11 +18,23 @@ class UserRead(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class CalculationType(str, Enum):
     add = "add"
     subtract = "subtract"
     multiply = "multiply"
     divide = "divide"
+
 
 class CalculationCreate(BaseModel):
     a: float
@@ -33,19 +47,6 @@ class CalculationCreate(BaseModel):
             raise ValueError("Division by zero is not allowed")
         return self
 
-class CalculationRead(BaseModel):
-    id: int
-    a: float
-    b: float
-    type: CalculationType
-    result: Optional[float] = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
 
 class CalculationUpdate(BaseModel):
     a: float
@@ -57,3 +58,13 @@ class CalculationUpdate(BaseModel):
         if self.type == CalculationType.divide and self.b == 0:
             raise ValueError("Division by zero is not allowed")
         return self
+
+
+class CalculationRead(BaseModel):
+    id: int
+    a: float
+    b: float
+    type: CalculationType
+    result: Optional[float] = None
+
+    model_config = ConfigDict(from_attributes=True)

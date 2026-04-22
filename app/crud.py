@@ -1,13 +1,16 @@
 from sqlalchemy.orm import Session
 from .models import User, Calculation
 from .schemas import UserCreate, CalculationCreate, CalculationType
-from .security import hash_password
+from .security import hash_password, verify_password
+
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
+
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
+
 
 def create_user(db: Session, user: UserCreate):
     if get_user_by_username(db, user.username):
@@ -26,6 +29,18 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
+
+def verify_user_login(db: Session, username: str, password: str):
+    user = get_user_by_username(db, username)
+    if not user:
+        raise ValueError("Invalid username or password")
+
+    if not verify_password(password, user.password_hash):
+        raise ValueError("Invalid username or password")
+
+    return user
+
+
 def compute_result(calculation: CalculationCreate) -> float:
     if calculation.type == CalculationType.add:
         return calculation.a + calculation.b
@@ -39,7 +54,8 @@ def compute_result(calculation: CalculationCreate) -> float:
         return calculation.a / calculation.b
     raise ValueError("Invalid calculation type")
 
-def create_calculation(db, calculation: CalculationCreate):
+
+def create_calculation(db: Session, calculation: CalculationCreate):
     result = compute_result(calculation)
 
     db_calculation = Calculation(
@@ -52,17 +68,6 @@ def create_calculation(db, calculation: CalculationCreate):
     db.commit()
     db.refresh(db_calculation)
     return db_calculation
-
-def verify_user_login(db: Session, username: str, password: str):
-    user = get_user_by_username(db, username)
-    if not user:
-        raise ValueError("Invalid username or password")
-
-    from .security import verify_password
-    if not verify_password(password, user.password_hash):
-        raise ValueError("Invalid username or password")
-
-    return user
 
 
 def get_all_calculations(db: Session):

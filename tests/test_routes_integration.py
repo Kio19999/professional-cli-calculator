@@ -6,7 +6,7 @@ client = TestClient(app)
 
 def test_register_user():
     response = client.post(
-        "/users/register",
+        "/register",
         json={
             "username": "testuser_route",
             "email": "testuser_route@example.com",
@@ -18,7 +18,7 @@ def test_register_user():
 
 def test_login_user():
     client.post(
-        "/users/register",
+        "/register",
         json={
             "username": "loginuser",
             "email": "loginuser@example.com",
@@ -27,13 +27,16 @@ def test_login_user():
     )
 
     response = client.post(
-        "/users/login",
+        "/login",
         json={
             "username": "loginuser",
             "password": "Strong123"
         }
     )
     assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
 
 
 def test_create_calculation():
@@ -53,6 +56,7 @@ def test_get_calculations():
     response = client.get("/calculations")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
+
 
 def test_update_and_delete_calculation():
     create_response = client.post(
