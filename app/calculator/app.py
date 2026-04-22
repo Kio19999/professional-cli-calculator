@@ -1,13 +1,26 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 import logging
-
-from app.operation.arithmetic import Add, Subtract, Multiply, Divide
-from fastapi import Depends
 from sqlalchemy.orm import Session
 
+from app.operation.arithmetic import Add, Subtract, Multiply, Divide
 from app.database import Base, engine, get_db
-from app.schemas import UserCreate, UserRead
-from app.crud import create_user
+from app.schemas import (
+    UserCreate,
+    UserRead,
+    UserLogin,
+    CalculationCreate,
+    CalculationRead,
+    CalculationUpdate,
+)
+from app.crud import (
+    create_user,
+    verify_user_login,
+    create_calculation,
+    get_all_calculations,
+    get_calculation_by_id,
+    update_calculation,
+    delete_calculation,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -65,10 +78,67 @@ def divide_numbers(a: float, b: float):
     except ZeroDivisionError as e:
         logger.error(str(e))
         raise HTTPException(status_code=400, detail=str(e))
-    
-@app.post("/users", response_model=UserRead, status_code=201)
-def create_user_route(user: UserCreate, db: Session = Depends(get_db)):
+
+
+@app.post("/users/register", response_model=UserRead, status_code=201)
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
     try:
         return create_user(db, user)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/users/login")
+def login_user(user: UserLogin, db: Session = Depends(get_db)):
+    try:
+        db_user = verify_user_login(db, user.username, user.password)
+        return {
+            "message": "Login successful",
+            "username": db_user.username,
+            "email": db_user.email
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/calculations", response_model=CalculationRead, status_code=201)
+def add_calculation(calculation: CalculationCreate, db: Session = Depends(get_db)):
+    try:
+        return create_calculation(db, calculation)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/calculations", response_model=list[CalculationRead])
+def browse_calculations(db: Session = Depends(get_db)):
+    return get_all_calculations(db)
+
+
+@app.get("/calculations/{calculation_id}", response_model=CalculationRead)
+def read_calculation(calculation_id: int, db: Session = Depends(get_db)):
+    calculation = get_calculation_by_id(db, calculation_id)
+    if not calculation:
+        raise HTTPException(status_code=404, detail="Calculation not found")
+    return calculation
+
+
+@app.put("/calculations/{calculation_id}", response_model=CalculationRead)
+def edit_calculation(
+    calculation_id: int,
+    calculation: CalculationUpdate,
+    db: Session = Depends(get_db)
+):
+    try:
+        return update_calculation(db, calculation_id, calculation)
+    except ValueError as e:
+        if str(e) == "Calculation not found":
+            raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/calculations/{calculation_id}")
+def remove_calculation(calculation_id: int, db: Session = Depends(get_db)):
+    try:
+        return delete_calculation(db, calculation_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))

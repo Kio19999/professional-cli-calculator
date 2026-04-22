@@ -1,151 +1,133 @@
-Calculator CLI + FastAPI Application
+# Calculator API – User & Calculation Routes
 
-Overview
+## Overview
+This project implements a FastAPI-based backend with:
+- User registration and login
+- Calculation CRUD (BREAD) operations
+- SQLAlchemy database integration
+- Pydantic validation
+- Integration and unit testing
+- CI/CD using GitHub Actions
 
-This project is a Python-based calculator application extended with a FastAPI backend and PostgreSQL database integration. It supports arithmetic operations and user creation with proper validation, along with comprehensive testing.
+---
 
-⸻
+## Features
 
-Features
-	•	Basic calculator operations:
-	•	Add
-	•	Subtract
-	•	Multiply
-	•	Divide
-	•	REST API built using FastAPI
-	•	PostgreSQL database integration using SQLAlchemy
-	•	User creation with validation and password hashing
-	•	Dockerized setup for easy deployment
-	•	Full test coverage:
-	•	Unit Tests
-	•	Integration Tests
-	•	End-to-End Tests
+### User Endpoints
+- POST `/users/register` → Register new user
+- POST `/users/login` → Login user (password verification)
 
-⸻
+### Calculation Endpoints (BREAD)
+- GET `/calculations` → Get all calculations
+- GET `/calculations/{id}` → Get single calculation
+- POST `/calculations` → Create calculation
+- PUT `/calculations/{id}` → Update calculation
+- DELETE `/calculations/{id}` → Delete calculation
 
-Tech Stack
-	•	Python 3.13
-	•	FastAPI
-	•	PostgreSQL
-	•	SQLAlchemy
-	•	Docker & Docker Compose
-	•	Pytest
+---
 
-⸻
+## Technologies Used
+- FastAPI  
+- SQLAlchemy  
+- Pydantic  
+- PostgreSQL  
+- Pytest  
+- GitHub Actions (CI/CD)  
+- Docker (configured)
 
-Setup Instructions
+---
 
-1. Clone the repository
+## How to Run the Application
 
-git clone (https://github.com/Kio19999/professional-cli-calculator)
-cd calculator-cli2
-
-2. Start the application using Docker
-
-docker compose up --build
-
-3. Access API
-
-Open browser:
-
-http://localhost:8000/docs
-
-
-⸻
-
-Running Tests
-
-# Calculator API
-
-## Run locally
+### 1. Install dependencies
 ```bash
 pip install -r requirements.txt
+```
+
+### 2. Run the server
+```bash
+uvicorn app.calculator.app:app --reload
+```
+
+### 3. Open API Docs
+Go to:
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## How to Run Tests
+
+```bash
 pytest -v
+```
 
+All tests (unit + integration) should pass.
 
-✔ All tests passing (42/42)
+---
 
-⸻
+## Database Setup
 
-docker build -t k1oo/calculator-api .
-docker run -p 8000:8000 k1oo/calculator-api
+Make sure PostgreSQL is running and update your connection string if needed:
 
-https://hub.docker.com/r/k1oo/calculator-api
+```
+postgresql://postgres:postgres@localhost:5432/fastapi_db
+```
 
+---
 
+## CI/CD Pipeline
 
-API Endpoints
+GitHub Actions is configured to:
+- Run all tests automatically on push
+- Ensure code correctness before deployment
 
-Method	Endpoint	Description
-GET	/	Home        route
-GET	/   add	        Add numbers
-GET	/.  subtract	Subtract numbers
-GET	/.  multiply	Multiply numbers
-GET	/   divide	    Divide numbers
-POST/.  users	    Create user
+Workflow file:
+```
+.github/workflows/python-tests.yml
+```
 
+---
 
-⸻
+## Project Structure
 
-Example Request (Create User)
-
-{
-  "username": "himanshu",
-  "email": "himanshu@example.com",
-  "password": "Strong123"
-}
-
-
-⸻
-
-Project Structure
-
+```
 app/
-  calculator/
-  operation/
-  database.py
-  models.py
-  schemas.py
-  crud.py
-  security.py
+  ├── calculator/
+  │     └── app.py
+  ├── crud.py
+  ├── database.py
+  ├── models.py
+  ├── schemas.py
+  ├── security.py
 
 tests/
-  test_api.py
-  test_calculations.py
-  test_operations.py
-  test_users_unit.py
-  test_users_integration.py
+  ├── test_users_integration.py
+  ├── test_routes_integration.py
+  ├── test_calculations.py
+```
 
-  ## CI/CD Pipeline
+---
 
-This project uses GitHub Actions for continuous integration.
+## Key Concepts Implemented
 
-- Runs automatically on push to main branch
-- Installs dependencies
-- Executes all tests using pytest
+- Pydantic validation for input/output  
+- Secure password hashing  
+- SQLAlchemy ORM models  
+- Integration testing with TestClient  
+- Factory-style logic for calculations  
+- RESTful API design  
 
-Latest workflow status: ✅ Passed
+---
 
-## Calculation Model and Tests
+## Notes
 
-This module adds a SQLAlchemy `Calculation` model and Pydantic schemas for validating calculation input and output.
+- Passwords are securely hashed before storage  
+- Input validation prevents invalid data (e.g., bad email, division by zero)  
+- Integration tests verify full API + DB flow  
 
-To run all tests locally:
+---
 
-```bash
-pip install -r requirements.txt
-pytest -v
-
-
-⸻
-
-Notes
-	•	Integration tests use PostgreSQL database.
-	•	Database connection is configured using SQLAlchemy.
-	•	Password hashing is implemented for security.
-
-⸻
-
-Author
-
+## Author
 Himanshu Singh

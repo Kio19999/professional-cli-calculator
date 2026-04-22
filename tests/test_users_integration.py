@@ -32,7 +32,7 @@ def teardown_module():
     Base.metadata.drop_all(bind=engine)
 
 def test_create_user_success():
-    response = client.post("/users", json={
+    response = client.post("/users/register", json={
         "username": "user1",
         "email": "user1@example.com",
         "password": "secret123"
@@ -43,13 +43,13 @@ def test_create_user_success():
     assert "password_hash" not in data
 
 def test_duplicate_username():
-    client.post("/users", json={
+    client.post("/users/register", json={
         "username": "duplicate_user",
         "email": "first@example.com",
         "password": "secret123"
     })
 
-    response = client.post("/users", json={
+    response = client.post("/users/register", json={
         "username": "duplicate_user",
         "email": "second@example.com",
         "password": "secret123"
@@ -57,7 +57,7 @@ def test_duplicate_username():
     assert response.status_code == 400
 
 def test_invalid_email():
-    response = client.post("/users", json={
+    response = client.post("/users/register", json={
         "username": "user2",
         "email": "invalid-email",
         "password": "secret123"

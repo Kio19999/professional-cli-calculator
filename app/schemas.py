@@ -41,3 +41,19 @@ class CalculationRead(BaseModel):
     result: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+
+class CalculationUpdate(BaseModel):
+    a: float
+    b: float
+    type: CalculationType
+
+    @model_validator(mode="after")
+    def validate_division(self):
+        if self.type == CalculationType.divide and self.b == 0:
+            raise ValueError("Division by zero is not allowed")
+        return self
