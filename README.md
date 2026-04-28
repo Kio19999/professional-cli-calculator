@@ -1,16 +1,17 @@
-# Calculator API – Full Stack (JWT + Frontend + E2E Testing)
+# Calculator API – Full Stack (JWT + Frontend + BREAD + E2E Testing)
 
 ## Overview
-This project implements a full-stack FastAPI application with backend APIs, frontend pages, authentication, and automated testing.
+This project implements a full-stack FastAPI application with authentication, calculation BREAD operations, frontend UI, and automated testing.
 
 It includes:
 - User registration and login with JWT authentication
-- Calculation CRUD (BREAD) operations
+- Full BREAD (Browse, Read, Edit, Add, Delete) operations for calculations
 - PostgreSQL database using SQLAlchemy
 - Pydantic validation
 - Frontend pages (HTML + JavaScript)
 - Playwright End-to-End testing
 - CI/CD using GitHub Actions
+- Docker support
 
 ---
 
@@ -31,26 +32,29 @@ It includes:
 
 ## Frontend Pages
 
-- /register → User registration page
-- /login → User login page
+- /register-page → User registration page  
+- /login-page → User login page  
+- /calculations-page → Full BREAD UI for calculations  
 
-Frontend functionality:
+### Frontend Functionality
 - Input validation (email format, password rules)
-- Displays success and error messages
+- Displays success/error messages
+- Create, browse, update, delete calculations
+- Displays API responses in real time
 - Stores JWT token in browser (localStorage)
 
 ---
 
 ## Technologies Used
 
-- FastAPI
-- SQLAlchemy
-- Pydantic
-- PostgreSQL
-- Pytest
-- Playwright (E2E testing)
-- GitHub Actions (CI/CD)
-- Docker
+- FastAPI  
+- SQLAlchemy  
+- Pydantic  
+- PostgreSQL  
+- Pytest  
+- Playwright (E2E testing)  
+- GitHub Actions (CI/CD)  
+- Docker  
 
 ---
 
@@ -59,24 +63,25 @@ Frontend functionality:
 ### 1. Install dependencies
 pip install -r requirements.txt
 
-### 2. Start the FastAPI server
+### 2. Start FastAPI server
 uvicorn app.calculator.app:app --reload
 
 ### 3. Open API Docs
 http://127.0.0.1:8000/docs
 
 ### 4. Open Frontend Pages
-http://127.0.0.1:8000/register  
-http://127.0.0.1:8000/login  
+http://127.0.0.1:8000/register-page  
+http://127.0.0.1:8000/login-page  
+http://127.0.0.1:8000/calculations-page  
 
 ---
 
 ## How to Run Tests
 
-### Run backend tests
+### Backend tests
 pytest -v
 
-### Run Playwright (E2E tests)
+### Playwright (E2E tests)
 
 First-time setup:
 npm init -y  
@@ -91,24 +96,24 @@ npx playwright test
 ## Database Configuration
 
 Default connection string:
-postgresql://postgres:postgres@localhost:5432/fastapi_db
+postgresql://postgres:postgres@localhost:5432/fastapi_db  
 
-Environment variables used:
-- DATABASE_URL
-- TEST_DATABASE_URL
+Environment variables:
+- DATABASE_URL  
+- TEST_DATABASE_URL  
 
 ---
 
 ## CI/CD Pipeline
 
 GitHub Actions automatically:
-- Starts PostgreSQL service
-- Runs backend tests (pytest)
-- Runs Playwright E2E tests
-- Fails if any test fails
+- Starts PostgreSQL service  
+- Runs backend tests (pytest)  
+- Runs Playwright E2E tests  
+- Fails if any test fails  
 
 Workflow file:
-.github/workflows/python-tests.yml
+.github/workflows/python-tests.yml  
 
 ---
 
@@ -126,9 +131,11 @@ app/
 frontend/
   login.html
   register.html
+  calculations.html
 
 e2e/
   auth.spec.js
+  calculations.spec.js
 
 tests/
   test_users_integration.py
@@ -142,33 +149,35 @@ tests/
 
 ## Key Concepts Implemented
 
-- JWT authentication (login + token generation)
+- JWT authentication (login + token)
 - Secure password hashing
-- Pydantic validation for request and response
-- SQLAlchemy ORM for database interaction
+- Pydantic validation
+- SQLAlchemy ORM
 - RESTful API design
 - Integration testing with TestClient
 - End-to-End testing using Playwright
-- CI/CD pipeline automation
+- CI/CD automation
 - Frontend and backend integration
+- Full BREAD operations
 
 ---
 
 ## Testing Coverage
 
-- Unit tests → verify logic
-- Integration tests → verify API + database
-- E2E tests → verify frontend + backend flow
+- Unit tests → verify logic  
+- Integration tests → verify API + database  
+- E2E tests → verify frontend + backend flow  
 
 ---
 
 ## Notes
 
-- Passwords are hashed before storing
-- JWT token is generated on login
-- Input validation prevents invalid data (e.g., invalid email, division by zero)
-- Playwright simulates real user interaction
-- CI/CD ensures all tests pass automatically
+- Passwords are hashed before storing  
+- JWT token is generated on login  
+- Input validation prevents invalid data  
+- Playwright simulates real user interaction  
+- CI/CD ensures reliability  
+- BREAD operations fully implemented and tested  
 
 ---
 
