@@ -145,3 +145,16 @@ def remove_calculation(calculation_id: int, db: Session = Depends(get_db)):
         return delete_calculation(db, calculation_id)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@app.delete("/calculations/{calculation_id}")
+def remove_calculation(calculation_id: int, db: Session = Depends(get_db)):
+    try:
+        return delete_calculation(db, calculation_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@app.get("/calculations-page")
+def calculations_page():
+    return FileResponse(os.path.join(FRONTEND_DIR, "calculations.html"))

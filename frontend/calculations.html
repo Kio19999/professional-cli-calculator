@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculations</title>
+</head>
+<body>
+  <h1>Calculation BREAD Operations</h1>
+
+  <h2>Add Calculation</h2>
+  <form id="addForm">
+    <input type="number" id="addA" placeholder="First number" required>
+    <input type="number" id="addB" placeholder="Second number" required>
+
+    <select id="addType" required>
+      <option value="add">Add</option>
+      <option value="subtract">Subtract</option>
+      <option value="multiply">Multiply</option>
+      <option value="divide">Divide</option>
+    </select>
+
+    <button type="submit">Add Calculation</button>
+  </form>
+
+  <h2>Browse Calculations</h2>
+  <button id="loadButton">Load Calculations</button>
+
+  <h2>Edit Calculation</h2>
+  <form id="editForm">
+    <input type="number" id="editId" placeholder="Calculation ID" required>
+    <input type="number" id="editA" placeholder="First number" required>
+    <input type="number" id="editB" placeholder="Second number" required>
+
+    <select id="editType" required>
+      <option value="add">Add</option>
+      <option value="subtract">Subtract</option>
+      <option value="multiply">Multiply</option>
+      <option value="divide">Divide</option>
+    </select>
+
+    <button type="submit">Update Calculation</button>
+  </form>
+
+  <h2>Delete Calculation</h2>
+  <input type="number" id="deleteId" placeholder="Calculation ID">
+  <button id="deleteButton">Delete Calculation</button>
+
+  <p id="message"></p>
+  <pre id="output"></pre>
+
+  <script>
+    const message = document.getElementById("message");
+    const output = document.getElementById("output");
+
+    document.getElementById("addForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const a = parseFloat(document.getElementById("addA").value);
+      const b = parseFloat(document.getElementById("addB").value);
+      const type = document.getElementById("addType").value;
+
+      const response = await fetch("/calculations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ a, b, type })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.innerText = "Calculation created";
+        output.innerText = JSON.stringify(data, null, 2);
+      } else {
+        message.innerText = data.detail || "Calculation creation failed";
+        output.innerText = JSON.stringify(data, null, 2);
+      }
+    });
+
+    document.getElementById("loadButton").addEventListener("click", async function() {
+      const response = await fetch("/calculations");
+      const data = await response.json();
+
+      if (response.ok) {
+        message.innerText = "Calculations loaded";
+        output.innerText = JSON.stringify(data, null, 2);
+      } else {
+        message.innerText = "Failed to load calculations";
+        output.innerText = JSON.stringify(data, null, 2);
+      }
+    });
+
+    document.getElementById("editForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const id = document.getElementById("editId").value;
+      const a = parseFloat(document.getElementById("editA").value);
+      const b = parseFloat(document.getElementById("editB").value);
+      const type = document.getElementById("editType").value;
+
+      const response = await fetch(`/calculations/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ a, b, type })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.innerText = "Calculation updated";
+        output.innerText = JSON.stringify(data, null, 2);
+      } else {
+        message.innerText = data.detail || "Calculation update failed";
+        output.innerText = JSON.stringify(data, null, 2);
+      }
+    });
+
+    document.getElementById("deleteButton").addEventListener("click", async function() {
+      const id = document.getElementById("deleteId").value;
+
+      const response = await fetch(`/calculations/${id}`, {
+        method: "DELETE"
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.innerText = "Calculation deleted";
+        output.innerText = JSON.stringify(data, null, 2);
+      } else {
+        message.innerText = data.detail || "Calculation delete failed";
+        output.innerText = JSON.stringify(data, null, 2);
+      }
+    });
+  </script>
+</body>
+</html>
