@@ -44,14 +44,21 @@ def verify_user_login(db: Session, username: str, password: str):
 def compute_result(calculation: CalculationCreate) -> float:
     if calculation.type == CalculationType.add:
         return calculation.a + calculation.b
+
     if calculation.type == CalculationType.subtract:
         return calculation.a - calculation.b
+
     if calculation.type == CalculationType.multiply:
         return calculation.a * calculation.b
+
     if calculation.type == CalculationType.divide:
         if calculation.b == 0:
             raise ValueError("Division by zero is not allowed")
         return calculation.a / calculation.b
+
+    if calculation.type == CalculationType.power:
+        return calculation.a ** calculation.b
+
     raise ValueError("Invalid calculation type")
 
 

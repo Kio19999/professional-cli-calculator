@@ -14,7 +14,7 @@ def test_calculation_create_valid_divide():
 
 def test_calculation_create_invalid_type():
     with pytest.raises(ValidationError):
-        CalculationCreate(a=10, b=5, type="power")
+        CalculationCreate(a=10, b=5, type="invalid")
 
 def test_calculation_create_divide_by_zero():
     with pytest.raises(ValidationError):

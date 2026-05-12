@@ -1,185 +1,380 @@
-# Calculator API – Full Stack (JWT + Frontend + BREAD + E2E Testing)
+# Calculator API – Full Stack (JWT + Frontend + BREAD + E2E Testing + Advanced Operations)
 
 ## Overview
-This project implements a full-stack FastAPI application with authentication, calculation BREAD operations, frontend UI, and automated testing.
 
-It includes:
+This project is a full-stack FastAPI web application that implements secure authentication, advanced calculator operations, frontend integration, automated testing, CI/CD, and Docker deployment.
+
+The application includes:
 - User registration and login with JWT authentication
-- Full BREAD (Browse, Read, Edit, Add, Delete) operations for calculations
-- PostgreSQL database using SQLAlchemy
-- Pydantic validation
-- Frontend pages (HTML + JavaScript)
-- Playwright End-to-End testing
-- CI/CD using GitHub Actions
-- Docker support
+- Full BREAD (Browse, Read, Edit, Add, Delete) operations
+- Advanced calculation operations including power calculations
+- PostgreSQL database integration using SQLAlchemy
+- Pydantic validation and schemas
+- Frontend pages using HTML + JavaScript
+- Automated backend and frontend testing
+- GitHub Actions CI/CD pipeline
+- Docker containerization
 
 ---
 
-## Features
+# Features
 
-### Authentication
-- POST /register → Register new user
-- POST /login → Login user and receive JWT token
+## Authentication Features
 
-### Calculation Endpoints (BREAD)
-- GET /calculations → Get all calculations
-- GET /calculations/{id} → Get single calculation
-- POST /calculations → Create calculation
-- PUT /calculations/{id} → Update calculation
-- DELETE /calculations/{id} → Delete calculation
+- Register new users
+- Login users securely
+- JWT token generation
+- Password hashing using secure encryption
+- LocalStorage JWT token support
 
----
+### Authentication Endpoints
 
-## Frontend Pages
-
-- /register-page → User registration page  
-- /login-page → User login page  
-- /calculations-page → Full BREAD UI for calculations  
-
-### Frontend Functionality
-- Input validation (email format, password rules)
-- Displays success/error messages
-- Create, browse, update, delete calculations
-- Displays API responses in real time
-- Stores JWT token in browser (localStorage)
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | /register | Register a new user |
+| POST | /login | Login and receive JWT token |
 
 ---
 
-## Technologies Used
+# Calculation Features
 
-- FastAPI  
-- SQLAlchemy  
-- Pydantic  
-- PostgreSQL  
-- Pytest  
-- Playwright (E2E testing)  
-- GitHub Actions (CI/CD)  
-- Docker  
+## Supported Operations
 
----
+- Addition
+- Subtraction
+- Multiplication
+- Division
+- Power operation
 
-## How to Run the Application
+## Calculation Endpoints (BREAD)
 
-### 1. Install dependencies
-pip install -r requirements.txt
-
-### 2. Start FastAPI server
-uvicorn app.calculator.app:app --reload
-
-### 3. Open API Docs
-http://127.0.0.1:8000/docs
-
-### 4. Open Frontend Pages
-http://127.0.0.1:8000/register-page  
-http://127.0.0.1:8000/login-page  
-http://127.0.0.1:8000/calculations-page  
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | /calculations | Get all calculations |
+| GET | /calculations/{id} | Get calculation by ID |
+| POST | /calculations | Create new calculation |
+| PUT | /calculations/{id} | Update calculation |
+| DELETE | /calculations/{id} | Delete calculation |
 
 ---
 
-## How to Run Tests
+# Frontend Pages
 
-### Backend tests
-pytest -v
-
-### Playwright (E2E tests)
-
-First-time setup:
-npm init -y  
-npm install -D @playwright/test  
-npx playwright install  
-
-Run tests:
-npx playwright test  
+| Route | Description |
+|---|---|
+| /register-page | User registration page |
+| /login-page | User login page |
+| /calculations-page | Full calculator BREAD UI |
 
 ---
 
-## Database Configuration
+# Frontend Functionality
 
-Default connection string:
-postgresql://postgres:postgres@localhost:5432/fastapi_db  
+The frontend includes:
 
-Environment variables:
-- DATABASE_URL  
-- TEST_DATABASE_URL  
-
----
-
-## CI/CD Pipeline
-
-GitHub Actions automatically:
-- Starts PostgreSQL service  
-- Runs backend tests (pytest)  
-- Runs Playwright E2E tests  
-- Fails if any test fails  
-
-Workflow file:
-.github/workflows/python-tests.yml  
+- User registration form
+- User login form
+- Real-time API interaction
+- Success and error messages
+- Create calculations
+- Browse calculations
+- Update calculations
+- Delete calculations
+- JSON response viewer
+- JWT token storage using localStorage
 
 ---
 
-## Project Structure
+# Technologies Used
+
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Pydantic
+- JWT Authentication
+- Pytest
+- Playwright
+- GitHub Actions
+- Docker
+- HTML
+- JavaScript
+
+---
+
+# Project Structure
 
 app/
-  calculator/
-    app.py
-  crud.py
-  database.py
-  models.py
-  schemas.py
-  security.py
+│
+├── calculator/
+│   └── app.py
+│
+├── crud.py
+├── database.py
+├── models.py
+├── schemas.py
+├── security.py
 
 frontend/
-  login.html
-  register.html
-  calculations.html
+│
+├── register.html
+├── login.html
+├── calculations.html
 
 e2e/
-  auth.spec.js
-  calculations.spec.js
+│
+├── auth.spec.js
+├── calculations.spec.js
 
 tests/
-  test_users_integration.py
-  test_routes_integration.py
-  test_calculations.py
+│
+├── test_api.py
+├── test_routes_integration.py
+├── test_users_integration.py
+├── test_calculation_schemas.py
+├── test_final_power_integration.py
 
-.github/workflows/
-  python-tests.yml
+.github/
+│
+└── workflows/
+    └── python-tests.yml
+
+Dockerfile
+docker-compose.yml
+requirements.txt
+README.md
 
 ---
 
-## Key Concepts Implemented
+# Database Configuration
 
-- JWT authentication (login + token)
+Default PostgreSQL connection:
+
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/fastapi_db
+
+Environment variables used:
+
+DATABASE_URL
+TEST_DATABASE_URL
+SECRET_KEY
+ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES
+
+---
+
+# How to Run the Application
+
+## 1. Clone Repository
+
+git clone <your-github-repo-url>
+cd Calculator-cli2
+
+---
+
+## 2. Create Virtual Environment
+
+python -m venv .venv
+
+Activate virtual environment:
+
+### Mac/Linux
+
+source .venv/bin/activate
+
+### Windows
+
+.venv\Scripts\activate
+
+---
+
+## 3. Install Dependencies
+
+pip install -r requirements.txt
+
+---
+
+## 4. Start PostgreSQL using Docker
+
+docker compose up -d
+
+Verify containers:
+
+docker ps
+
+---
+
+## 5. Start FastAPI Server
+
+uvicorn app.calculator.app:app --reload
+
+Server runs at:
+
+http://127.0.0.1:8000
+
+---
+
+# API Documentation
+
+Open Swagger Docs:
+
+http://127.0.0.1:8000/docs
+
+---
+
+# Frontend URLs
+
+Open in browser:
+
+http://127.0.0.1:8000/register-page
+http://127.0.0.1:8000/login-page
+http://127.0.0.1:8000/calculations-page
+
+---
+
+# Running Tests
+
+## Backend Tests
+
+Run all backend tests:
+
+
+pytest -v
+
+Expected result:
+
+
+58 passed
+
+---
+
+# Playwright End-to-End Tests
+
+## First-Time Setup
+
+
+npm init -y
+npm install -D @playwright/test
+npx playwright install
+
+
+---
+
+## Run Playwright Tests
+
+Keep FastAPI server running first:
+
+
+uvicorn app.calculator.app:app --reload
+
+Then open another terminal and run:
+
+
+npx playwright test
+
+Expected result:
+
+7 passed
+
+
+---
+
+# Docker Support
+
+## Build Docker Image
+
+
+docker build -t calculator-api .
+
+---
+
+## Run Docker Container
+
+docker compose up -d
+
+---
+
+# CI/CD Pipeline
+
+GitHub Actions automatically:
+
+- Starts PostgreSQL service
+- Installs dependencies
+- Runs Pytest backend tests
+- Runs Playwright E2E tests
+- Verifies Docker build
+- Fails workflow if tests fail
+
+Workflow file:
+
+.github/workflows/python-tests.yml
+
+---
+
+# Testing Coverage
+
+## Unit Tests
+
+Verify:
+- Calculation logic
+- Password hashing
+- Validation logic
+
+## Integration Tests
+
+Verify:
+- Database interaction
+- API endpoints
+- Authentication flow
+
+## End-to-End Tests
+
+Verify:
+- Frontend + backend interaction
+- User login flow
+- User registration flow
+- Full calculation workflow
+
+---
+
+# Security Features
+
+- JWT token authentication
 - Secure password hashing
-- Pydantic validation
+- Input validation using Pydantic
+- Division-by-zero protection
+- Protected calculation operations
+
+---
+
+# Key Concepts Implemented
+
+- REST API development
+- FastAPI routing
 - SQLAlchemy ORM
-- RESTful API design
-- Integration testing with TestClient
-- End-to-End testing using Playwright
+- PostgreSQL integration
+- JWT authentication
+- Pydantic schemas
+- CRUD/BREAD operations
+- Frontend integration
+- Playwright testing
+- Pytest testing
+- Docker containerization
 - CI/CD automation
-- Frontend and backend integration
-- Full BREAD operations
 
 ---
 
-## Testing Coverage
+# Notes
 
-- Unit tests → verify logic  
-- Integration tests → verify API + database  
-- E2E tests → verify frontend + backend flow  
-
----
-
-## Notes
-
-- Passwords are hashed before storing  
-- JWT token is generated on login  
-- Input validation prevents invalid data  
-- Playwright simulates real user interaction  
-- CI/CD ensures reliability  
-- BREAD operations fully implemented and tested  
+- Passwords are securely hashed before storage
+- JWT tokens are generated during login
+- Frontend stores JWT token in localStorage
+- Playwright simulates real user interactions
+- All BREAD operations are fully tested
+- Docker simplifies deployment
+- CI/CD ensures application reliability
 
 ---
 
-## Author
+# Author
+
 Himanshu Singh
+MS in Data Science – NJIT

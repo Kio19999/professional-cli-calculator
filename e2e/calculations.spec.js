@@ -54,3 +54,16 @@ test('update and delete calculation from frontend', async ({ page }) => {
 
   await expect(page.locator('#message')).toHaveText('Calculation deleted');
 });
+
+test('create power calculation from frontend', async ({ page }) => {
+  await page.goto('http://127.0.0.1:8000/calculations-page');
+
+  await page.fill('#addA', '2');
+  await page.fill('#addB', '3');
+  await page.selectOption('#addType', 'power');
+  await page.click('#addForm button[type="submit"]');
+
+  await expect(page.locator('#message')).toHaveText('Calculation created');
+  await expect(page.locator('#output')).toContainText('"type": "power"');
+  await expect(page.locator('#output')).toContainText('"result": 8');
+});
